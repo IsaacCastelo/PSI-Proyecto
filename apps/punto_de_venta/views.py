@@ -4,10 +4,15 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Pedido, DetallePedido
-from .forms import PedidoForm, DetallePedidoFormSet
+
+## Models
+from .models import Pedido, DetallePedido, Usuario
+## Forms
+from .forms import PedidoForm, DetallePedidoFormSet, UsuarioForm
+
 from django.contrib import messages
 import json, sys
+
 
 
 # Login
@@ -91,3 +96,49 @@ def marcar_pago(request, pedido_id):
     pedido.save()
     messages.success(request, 'Pago del pedido registrado.')
     return redirect('administrar_ordenes')
+
+
+## Usuarios Listado
+@login_required
+def usuario_list(request):
+    usuarios = Usuario.objects.all()
+    return render(request, 'usuario/usuario_list.html', {'usuarios': usuarios})
+
+## Crear usuario
+@login_required
+def usuario_create(request):
+    if request.method == 'POST':
+        form = UsuarioForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Usuario creado con éxito.')
+            return redirect('usuario_list')
+    else:
+        form = UsuarioForm()
+    return render(request, 'usuario/usuario_form.html', {'form': form})
+
+## editar usuario
+@login_required
+def usuario_edit(request, pk):
+    usuario = get_object_or_404(Usuario, pk=pk)
+    if request.method == 'POST':
+        form = UsuarioForm(request.POST, instance=usuario)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Usuario actualizado con éxito.')
+            return redirect('usuario_list')
+    else:
+        form = UsuarioForm(instance=usuario)
+    return render(request, 'usuario/usuario_form.html', {'form': form})
+
+## Eliminar usuario
+@login_required
+def usuario_delete(request, pk):
+    usuario = get_object_or_404(Usuario, pk=pk)
+    if request.method == 'POST':
+        usuario.delete()
+        messages.success(request, 'Usuario eliminado con éxito.')
+        return redirect('usuario_list')
+    return render(request, 'usuario/delete_usuario.html', {'usuario': usuario})
+
+

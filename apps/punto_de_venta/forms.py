@@ -1,5 +1,6 @@
 from django import forms
-from .models import Pedido, DetallePedido
+from .models import Pedido, DetallePedido, Usuario
+
 
 class PedidoForm(forms.ModelForm):
     class Meta:
@@ -15,3 +16,13 @@ class DetallePedidoForm(forms.ModelForm):
         fields = ['cantidad', 'precio', 'notas', 'platillo']
 
 DetallePedidoFormSet = forms.inlineformset_factory(Pedido, DetallePedido, form=DetallePedidoForm, extra=1, can_delete=True)
+
+
+## Usuarios forms
+class UsuarioForm(forms.ModelForm):
+    class Meta:
+        model = Usuario
+        fields = ['nombre_usuario', 'contrasenia', 'tipo_usuario']
+        widgets = {
+            'contrasenia': forms.PasswordInput(),
+        }

@@ -45,3 +45,9 @@ class Reporte(models.Model):
     fecha = models.DateField()
     notas = models.CharField(max_length=500)
     reporte = models.CharField(max_length=255)
+    
+class Usuario(models.Model):
+    nombre_usuario = models.CharField(max_length=50)
+    contrasenia = models.CharField(max_length=50)
+    tipo_usuario = models.IntegerField(choices=[(1, 'Cliente'), (2, 'Administrador')])
+    
