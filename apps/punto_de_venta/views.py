@@ -1,35 +1,31 @@
-from rest_framework import viewsets
-from .models import Mesa, Platillo, Pedido, DetallePedido, IngresoDiario, Movimiento, Reporte, Usuario
-from .serializers import MesaSerializer, PlatilloSerializer, PedidoSerializer, DetallePedidoSerializer, IngresoDiarioSerializer, MovimientoSerializer, ReporteSerializer, UsuarioSerializer
+from rest_framework import generics
+from .models import Mesa, Platillo, Pedido, DetallePedido, IngresoDiario, Movimiento, Reporte
+from .serializers import MesaSerializer, PlatilloSerializer, PedidoSerializer, DetallePedidoSerializer, IngresoDiarioSerializer, MovimientoSerializer, ReporteSerializer
 
-class MesaViewSet(viewsets.ModelViewSet):
+class MesaListCreate(generics.ListCreateAPIView):
     queryset = Mesa.objects.all()
     serializer_class = MesaSerializer
 
-class PlatilloViewSet(viewsets.ModelViewSet):
+class PlatilloListCreate(generics.ListCreateAPIView):
     queryset = Platillo.objects.all()
     serializer_class = PlatilloSerializer
 
-class PedidoViewSet(viewsets.ModelViewSet):
+class PedidoListCreate(generics.ListCreateAPIView):
     queryset = Pedido.objects.all()
     serializer_class = PedidoSerializer
 
-class DetallePedidoViewSet(viewsets.ModelViewSet):
+class DetallePedidoListCreate(generics.ListCreateAPIView):
     queryset = DetallePedido.objects.all()
     serializer_class = DetallePedidoSerializer
 
-class IngresoDiarioViewSet(viewsets.ModelViewSet):
+class IngresoDiarioListCreate(generics.ListCreateAPIView):
     queryset = IngresoDiario.objects.all()
     serializer_class = IngresoDiarioSerializer
 
-class MovimientoViewSet(viewsets.ModelViewSet):
+class MovimientoListCreate(generics.ListCreateAPIView):
     queryset = Movimiento.objects.all()
     serializer_class = MovimientoSerializer
 
-class ReporteViewSet(viewsets.ModelViewSet):
+class ReporteListCreate(generics.ListCreateAPIView):
     queryset = Reporte.objects.all()
     serializer_class = ReporteSerializer
-
-class UsuarioViewSet(viewsets.ModelViewSet):
-    queryset = Usuario.objects.all()
-    serializer_class = UsuarioSerializer

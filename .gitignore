@@ -177,4 +177,5 @@ dist-ssr
 
 # cache de python
 __pycache__/
+*__pycache__/
 *.pyc

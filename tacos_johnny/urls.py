@@ -16,17 +16,18 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from . import views
+from apps.punto_de_venta import views
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
 
-    # Punto de venta
-    path('Mesas/', views.mesa_list, name='mesa_list'),
-    path('platillos/', views.platillo_list, name='platillo_list'),
-    path('pedidos/', views.pedido_list, name='pedido_list'),
-    path('detalle_pedidos/', views.detalle_pedido_list, name='detalle_pedido_list'),
-    path('ingresos_diarios/', views.ingreso_diario_list, name='ingreso_diario_list'),
-    path('movimientos/', views.movimiento_list, name='movimiento_list'),
-    path('reportes/', views.reporte_list, name='reporte_list'),
+    path('admin/', admin.site.urls),
+    path('mesas/', views.MesaListCreate.as_view(), name='mesa-list-create'),
+    path('platillos/', views.PlatilloListCreate.as_view(), name='platillo-list-create'),
+    path('pedidos/', views.PedidoListCreate.as_view(), name='pedido-list-create'),
+    path('detalles-pedido/', views.DetallePedidoListCreate.as_view(), name='detalle-pedido-list-create'),
+    path('ingresos-diarios/', views.IngresoDiarioListCreate.as_view(), name='ingreso-diario-list-create'),
+    path('movimientos/', views.MovimientoListCreate.as_view(), name='movimiento-list-create'),
+    path('reportes/', views.ReporteListCreate.as_view(), name='reporte-list-create'),
+
+    
 ]
