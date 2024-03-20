@@ -26,4 +26,13 @@ urlpatterns = [
     path('usuarios/nuevo/', views.usuario_create, name='usuario_create'),
     path('usuarios/editar/<int:pk>/', views.usuario_edit, name='usuario_edit'),
     path('usuarios/eliminar/<int:pk>/', views.usuario_delete, name='usuario_delete'),
+
+    # Punto de venta
+    path('Mesas/', views.mesa_list, name='mesa_list'),
+    path('platillos/', views.platillo_list, name='platillo_list'),
+    path('pedidos/', views.pedido_list, name='pedido_list'),
+    path('detalle_pedidos/', views.detalle_pedido_list, name='detalle_pedido_list'),
+    path('ingresos_diarios/', views.ingreso_diario_list, name='ingreso_diario_list'),
+    path('movimientos/', views.movimiento_list, name='movimiento_list'),
+    path('reportes/', views.reporte_list, name='reporte_list'),
 ]
