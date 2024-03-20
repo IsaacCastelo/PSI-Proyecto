@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import User
 
 # Create your models here.
@@ -46,7 +47,8 @@ class Reporte(models.Model):
     notas = models.CharField(max_length=500)
     reporte = models.CharField(max_length=255)
     
-class Usuario(models.Model):
+class Usuario(AbstractUser):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     nombre_usuario = models.CharField(max_length=50)
     contrasenia = models.CharField(max_length=50)
     tipo_usuario = models.IntegerField(choices=[(1, 'Cliente'), (2, 'Administrador')])

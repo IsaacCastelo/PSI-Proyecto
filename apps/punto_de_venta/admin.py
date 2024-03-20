@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin
 from .models import Mesa, Platillo, Pedido, DetallePedido, IngresoDiario, Movimiento, Reporte, Usuario
 
 admin.site.register(Mesa)
@@ -8,5 +9,5 @@ admin.site.register(DetallePedido)
 admin.site.register(IngresoDiario)
 admin.site.register(Movimiento)
 admin.site.register(Reporte)
-admin.site.register(Usuario)
+admin.site.register(Usuario, UserAdmin)
 

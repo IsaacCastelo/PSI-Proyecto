@@ -105,7 +105,6 @@ def usuario_list(request):
     return render(request, 'usuario/usuario_list.html', {'usuarios': usuarios})
 
 ## Crear usuario
-@login_required
 def usuario_create(request):
     if request.method == 'POST':
         form = UsuarioForm(request.POST)
