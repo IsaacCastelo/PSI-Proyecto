@@ -1,5 +1,8 @@
 from django.db import models
+from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import User
+from django.utils.translation import gettext_lazy as _
+
 
 # Create your models here.
 class Mesa(models.Model):
@@ -45,3 +48,27 @@ class Reporte(models.Model):
     fecha = models.DateField()
     notas = models.CharField(max_length=500)
     reporte = models.CharField(max_length=255)
+    
+class Usuario(AbstractUser):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    nombre_usuario = models.CharField(max_length=50)
+    contrasenia = models.CharField(max_length=50)
+    tipo_usuario = models.IntegerField(choices=[(1, 'Cliente'), (2, 'Administrador')])
+
+    groups = models.ManyToManyField(
+        'auth.Group',
+        verbose_name=_('groups'),
+        blank=True,
+        help_text=_('The groups this user belongs to. A user will get all permissions granted to each of their groups.'),
+        related_name='usuario_groups',  # Cambia 'usuario_groups' a un nombre único que prefieras
+        related_query_name='user',
+    )
+    user_permissions = models.ManyToManyField(
+        'auth.Permission',
+        verbose_name=_('user permissions'),
+        blank=True,
+        help_text=_('Specific permissions for this user.'),
+        related_name='usuario_user_permissions',  # Cambia 'usuario_user_permissions' a un nombre único que prefieras
+        related_query_name='user',
+    )
+    

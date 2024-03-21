@@ -173,4 +173,11 @@ dist-ssr
 *.ntvs*
 *.njsproj
 *.sln
-*.sw?
+*.sw
+
+# cache de python
+__pycache__/
+*__pycache__/
+*.pyc
+**/*.pyc
+**/__pycache__
