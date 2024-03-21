@@ -13,6 +13,7 @@ import AddOrder from '../AddOrder/AddOrder';
 import EditOrder from '../EditOrder/EditOrder';
 import ViewOrders from '../ViewOrders/ViewOrders';
 import Order from '../Order/Order';
+import DeleteOrders from '../DeleteOrders/DeleteOrders';
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
           <Route path='/pay-orders' element={<OpenOrders />} />
           <Route path='/order' element={<Order />} />
           <Route path='/pay-order' element={<OpenOrder />} />
+          <Route path='/delete-order' element={<DeleteOrders />} />
           <Route path='*' element={<Navigate to='/dashboard' />} />
         </Routes>
       </Router>
