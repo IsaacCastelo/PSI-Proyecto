@@ -1,33 +1,35 @@
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
+import PropTypes from 'prop-types';
+import { useForm } from 'react-hook-form';
 
-export default function AddOrder() {
+AddOrder.propTypes = {
+  onSubmit: PropTypes.func.isRequired,
+  productos: PropTypes.array.isRequired,
+  total: PropTypes.number.isRequired,
+  onProductDecrease: PropTypes.func.isRequired,
+  onProductIncrease: PropTypes.func.isRequired,
+  onNoteChange: PropTypes.func.isRequired,
+  onProductDelete: PropTypes.func.isRequired,
+  onRadioChange: PropTypes.func.isRequired,
+  isLocal: PropTypes.bool.isRequired,
+  onPlatilloChange: PropTypes.func.isRequired,
+  platillos: PropTypes.array.isRequired,
+};
+
+export default function AddOrder({
+  onSubmit,
+  productos,
+  total,
+  onProductDecrease,
+  onProductIncrease,
+  onNoteChange,
+  onProductDelete,
+  onRadioChange,
+  isLocal,
+  onPlatilloChange,
+  platillos,
+}) {
   const { register, handleSubmit } = useForm();
-  const [isLocal, setIsLocal] = useState(true);
-  const [pedido, setPedido] = useState({});
-  const [detallePedido, setDetallePedido] = useState([]);
-
-  function handleRadioChange(e) {
-    if (e.target.value === '2' || e.target.value === '3') {
-      setIsLocal(false);
-    } else {
-      setIsLocal(true);
-    }
-  }
-
-  function onSubmit(data) {
-    if (data.platillo === 'INVALIDO') {
-      toast.error('Selecciona un platillo');
-      return;
-    }
-    console.log('working');
-  }
-
-  function handlePlatilloChange(e) {
-    console.log('Nuevo platillo: ' + e.target.value);
-    setPedido({ ...pedido, platillo: e.target.value });
-  }
 
   return (
     <section className='w-full'>
@@ -49,7 +51,7 @@ export default function AddOrder() {
                 {...register('tipoPedido')}
                 value='1'
                 defaultChecked
-                onChange={handleRadioChange}
+                onChange={onRadioChange}
               />
               <label className='p-1' htmlFor='local'>
                 Local
@@ -61,7 +63,7 @@ export default function AddOrder() {
                 id='domicilio'
                 {...register('tipoPedido')}
                 value='2'
-                onChange={handleRadioChange}
+                onChange={onRadioChange}
               />
               <label className='p-1' htmlFor='domicilio'>
                 Domicilio
@@ -73,7 +75,7 @@ export default function AddOrder() {
                 id='recoger'
                 {...register('tipoPedido')}
                 value='3'
-                onChange={handleRadioChange}
+                onChange={onRadioChange}
               />
               <label className='p-1' htmlFor='recoger'>
                 Recoger
@@ -87,8 +89,8 @@ export default function AddOrder() {
             {isLocal ? (
               <input
                 id='mesa'
-                {...register('mesa')}
-                className='border w-full'
+                {...register('mesa', { required: isLocal })}
+                className='border w-full px-1'
                 type='number'
                 min='1'
                 max='10'
@@ -96,8 +98,8 @@ export default function AddOrder() {
             ) : (
               <input
                 id='nombre'
-                {...register('nombre')}
-                className='border w-full'
+                {...register('nombre', { required: !isLocal })}
+                className='border w-full px-1'
                 type='text'
               />
             )}
@@ -106,32 +108,21 @@ export default function AddOrder() {
             <select
               className='w-full rounded border p-2'
               id='menu'
-              onChangeCapture={handlePlatilloChange}
+              onChangeCapture={onPlatilloChange}
               defaultValue={'INVALIDO'}
               {...register('platillo', { required: true })}
             >
               <option disabled value='INVALIDO'>
                 -- Selecciona un platillo --
               </option>
-              <option value='chicharron'>Taco de chicharron</option>
-              <option value='tripa'>Taco de tripa</option>
-              <option value='buche'>Taco de buche</option>
-              <option value='cabeza'>Taco de cabeza</option>
+              {platillos
+                ? platillos.map((platillo) => (
+                    <option key={platillo.id} value={JSON.stringify(platillo)}>
+                      {platillo.nombre}
+                    </option>
+                  ))
+                : toast.error('No hay platillos disponibles')}
             </select>
-            <legend className='font-semibold'>Cantidad*</legend>
-            <input
-              id='cantidad'
-              {...register('cantidad', { required: true })}
-              className='w-full border'
-              type='number'
-              min='1'
-            />
-            <legend className='font-semibold'>Nota</legend>
-            <textarea
-              id='nota'
-              {...register('nota')}
-              className='w-full border'
-            ></textarea>
           </fieldset>
           <button
             type='submit'
@@ -149,30 +140,48 @@ export default function AddOrder() {
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>Producto 1</td>
-              <td>1</td>
-              <td>Nota</td>
-              <td>
-                <button className='material-icons'>delete_forever</button>
-              </td>
-            </tr>
-            <tr>
-              <td>Producto 2</td>
-              <td>1</td>
-              <td>Nota</td>
-              <td>
-                <button className='material-icons'>delete_forever</button>
-              </td>
-            </tr>
-            <tr>
-              <td>Producto 3</td>
-              <td>1</td>
-              <td>Nota</td>
-              <td>
-                <button className='material-icons'>delete_forever</button>
-              </td>
-            </tr>
+            {productos.map((producto, i) => (
+              <tr key={i}>
+                <td>{producto.nombre}</td>
+                <td>
+                  <button
+                    onClick={() => onProductDecrease(i)}
+                    className='material-icons align-middle'
+                  >
+                    remove
+                  </button>
+                  {producto?.cantidad}
+                  <button
+                    onClick={() => onProductIncrease(i)}
+                    className='material-icons align-middle'
+                  >
+                    add
+                  </button>
+                </td>
+                <td>
+                  <textarea
+                    onInput={(e) => onNoteChange(i, e)}
+                    name='nota'
+                    className='w-full border'
+                  ></textarea>
+                </td>
+                <td>
+                  <button
+                    onClick={() => onProductDelete(i)}
+                    className='material-icons'
+                  >
+                    delete_forever
+                  </button>
+                </td>
+              </tr>
+            ))}
+            {total > 0 && (
+              <tr>
+                <td></td>
+                <td>Total:</td>
+                <td>${total}</td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>

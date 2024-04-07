@@ -1,4 +1,15 @@
-export default function EditOrder() {
+import PropTypes from 'prop-types';
+import toast from 'react-hot-toast';
+import { useForm } from 'react-hook-form';
+
+EditOrder.propTypes = {
+  platillos: PropTypes.array.isRequired,
+  onPlatilloChange: PropTypes.func.isRequired,
+  setTotal: PropTypes.func,
+};
+
+export default function EditOrder({ platillos, onPlatilloChange }) {
+  const { register } = useForm();
   return (
     <section className='w-full'>
       <header className='p-6'>
@@ -17,13 +28,20 @@ export default function EditOrder() {
             <select
               className='w-full rounded border p-2'
               id='menu'
-              name='dishes'
-              required
+              onChangeCapture={onPlatilloChange}
+              defaultValue={'INVALIDO'}
+              {...register('platillo', { required: true })}
             >
-              <option value='chicharron'>Taco de chicharron</option>
-              <option value='tripa'>Taco de tripa</option>
-              <option value='buche'>Taco de buche</option>
-              <option value='cabeza'>Taco de cabeza</option>
+              <option disabled value='INVALIDO'>
+                -- Selecciona un platillo --
+              </option>
+              {platillos
+                ? platillos.map((platillo) => (
+                    <option key={platillo.id} value={JSON.stringify(platillo)}>
+                      {platillo.nombre}
+                    </option>
+                  ))
+                : toast.error('No hay platillos disponibles')}
             </select>
             <legend className='font-semibold'>Cantidad*</legend>
             <input className='w-full border' type='number' min='1' />
