@@ -5,8 +5,8 @@ from django.utils.translation import gettext_lazy as _
 
 
 # Create your models here.
-class Mesa(models.Model):
-    id = models.CharField(max_length=3, primary_key=True)
+# class Mesa(models.Model):
+#     id = models.CharField(max_length=3, primary_key=True)
 
 class Platillo(models.Model):
     nombre = models.CharField(max_length=255)
@@ -18,7 +18,7 @@ class Pedido(models.Model):
     estado = models.IntegerField(choices=[(1, 'Pendiente'), (2, 'En proceso'), (3, 'Listo'), (4, 'Entregado')])
     total = models.FloatField()
     monto_total = models.FloatField()
-    mesa = models.ForeignKey(Mesa, on_delete=models.CASCADE)
+    mesa = models.CharField(max_length=10)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
     tipo_pago = models.CharField(max_length=255)
     monto = models.FloatField()
@@ -49,26 +49,26 @@ class Reporte(models.Model):
     notas = models.CharField(max_length=500)
     reporte = models.CharField(max_length=255)
     
-class Usuario(AbstractUser):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    nombre_usuario = models.CharField(max_length=50)
-    contrasenia = models.CharField(max_length=50)
-    tipo_usuario = models.IntegerField(choices=[(1, 'Cliente'), (2, 'Administrador')])
+# class Usuario(AbstractUser):
+#     user = models.OneToOneField(User, on_delete=models.CASCADE)
+#     nombre_usuario = models.CharField(max_length=50)
+#     contrasenia = models.CharField(max_length=50)
+#     tipo_usuario = models.IntegerField(choices=[(1, 'Cliente'), (2, 'Administrador')])
 
-    groups = models.ManyToManyField(
-        'auth.Group',
-        verbose_name=_('groups'),
-        blank=True,
-        help_text=_('The groups this user belongs to. A user will get all permissions granted to each of their groups.'),
-        related_name='usuario_groups',  # Cambia 'usuario_groups' a un nombre único que prefieras
-        related_query_name='user',
-    )
-    user_permissions = models.ManyToManyField(
-        'auth.Permission',
-        verbose_name=_('user permissions'),
-        blank=True,
-        help_text=_('Specific permissions for this user.'),
-        related_name='usuario_user_permissions',  # Cambia 'usuario_user_permissions' a un nombre único que prefieras
-        related_query_name='user',
-    )
+#     groups = models.ManyToManyField(
+#         'auth.Group',
+#         verbose_name=_('groups'),
+#         blank=True,
+#         help_text=_('The groups this user belongs to. A user will get all permissions granted to each of their groups.'),
+#         related_name='usuario_groups',  # Cambia 'usuario_groups' a un nombre único que prefieras
+#         related_query_name='user',
+#     )
+#     user_permissions = models.ManyToManyField(
+#         'auth.Permission',
+#         verbose_name=_('user permissions'),
+#         blank=True,
+#         help_text=_('Specific permissions for this user.'),
+#         related_name='usuario_user_permissions',  # Cambia 'usuario_user_permissions' a un nombre único que prefieras
+#         related_query_name='user',
+#     )
     

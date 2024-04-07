@@ -1,15 +1,15 @@
 from rest_framework import serializers
-from .models import Mesa, Platillo, Pedido, DetallePedido, IngresoDiario, Movimiento, Reporte, Usuario
+from .models import Platillo, Pedido, DetallePedido, IngresoDiario, Movimiento, Reporte
 
-class MesaSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Mesa
-        fields = '__all__'
+# class MesaSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Mesa
+#         fields = '__all__'
 
 class PlatilloSerializer(serializers.ModelSerializer):
     class Meta:
         model = Platillo
-        fields = '__all__'
+        fields = ('estado', 'mesa', ''
 
 class PedidoSerializer(serializers.ModelSerializer):
     class Meta:
@@ -36,7 +36,7 @@ class ReporteSerializer(serializers.ModelSerializer):
         model = Reporte
         fields = '__all__'
 
-class UsuarioSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Usuario
-        fields = '__all__'
+# class UsuarioSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Usuario
+#         fields = '__all__'

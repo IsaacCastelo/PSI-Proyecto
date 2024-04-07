@@ -1,14 +1,15 @@
 from rest_framework import generics
-from .models import Mesa, Platillo, Pedido, DetallePedido, IngresoDiario, Movimiento, Reporte
-from .serializers import MesaSerializer, PlatilloSerializer, PedidoSerializer, DetallePedidoSerializer, IngresoDiarioSerializer, MovimientoSerializer, ReporteSerializer
+from .models import Platillo, Pedido, DetallePedido, IngresoDiario, Movimiento, Reporte
+from .serializers import PlatilloSerializer, PedidoSerializer, DetallePedidoSerializer, IngresoDiarioSerializer, MovimientoSerializer, ReporteSerializer
+from datetime import datetime
 
-class MesaListCreate(generics.ListCreateAPIView):
-    queryset = Mesa.objects.all()
-    serializer_class = MesaSerializer
+# class MesaListCreate(generics.ListCreateAPIView):
+#     queryset = Mesa.objects.all()
+#     serializer_class = MesaSerializer
 
-class MesaDetailUpdateDelete(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Mesa.objects.all()
-    serializer_class = MesaSerializer
+# class MesaDetailUpdateDelete(generics.RetrieveUpdateDestroyAPIView):
+#     queryset = Mesa.objects.all()
+#     serializer_class = MesaSerializer
 
 class PlatilloListCreate(generics.ListCreateAPIView):
     queryset = Platillo.objects.all()
@@ -21,6 +22,15 @@ class PlatilloDetailUpdateDelete(generics.RetrieveUpdateDestroyAPIView):
 class PedidoListCreate(generics.ListCreateAPIView):
     queryset = Pedido.objects.all()
     serializer_class = PedidoSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(
+            created_by=self.request.created_by,
+            estado='Pendiente',
+            fecha=datetime.now().date()
+        )
+
+
 
 class PedidoDetailUpdateDelete(generics.RetrieveUpdateDestroyAPIView):
     queryset = Pedido.objects.all()
