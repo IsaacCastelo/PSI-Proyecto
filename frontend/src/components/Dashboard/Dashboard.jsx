@@ -15,6 +15,10 @@ export default function Dashboard() {
     window.location.href = '/pay-orders';
   }
 
+  function handleDeleteOrderClick() {
+    window.location.href = '/delete-order';
+  }
+
   return (
     <section className='w-full p-12'>
       <header className='p-6'>
@@ -49,6 +53,7 @@ export default function Dashboard() {
           <span className='material-icons py-1'>edit</span>
         </button>
         <button
+          onClick={handleDeleteOrderClick}
           className='flex justify-around w-52 p-6 shadow-md
              transition ease-in-out delay-75 hover:-translate-y-1 hover:scale-110 hover:bg-gray-300 hover:text-gray-700 '
         >
