@@ -48,7 +48,7 @@ export default function AddOrder({
               <input
                 type='radio'
                 id='local'
-                {...register('tipoPedido')}
+                {...register('tipo_pedido')}
                 value='1'
                 defaultChecked
                 onChange={onRadioChange}
@@ -61,7 +61,7 @@ export default function AddOrder({
               <input
                 type='radio'
                 id='domicilio'
-                {...register('tipoPedido')}
+                {...register('tipo_pedido')}
                 value='2'
                 onChange={onRadioChange}
               />
@@ -73,7 +73,7 @@ export default function AddOrder({
               <input
                 type='radio'
                 id='recoger'
-                {...register('tipoPedido')}
+                {...register('tipo_pedido')}
                 value='3'
                 onChange={onRadioChange}
               />

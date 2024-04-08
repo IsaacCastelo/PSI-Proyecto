@@ -62,10 +62,6 @@ function App() {
   function onNewOrderSubmit(data) {
     if (productos.length === 0) {
       toast.error('Debes agregar al menos un platillo');
-      // postOrden(data).then((data) => {
-        //   console.log(data);
-        // });
-        
         return;
       }else{
         postOrden(data).then((data) => {
