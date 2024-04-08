@@ -97,8 +97,8 @@ export default function AddOrder({
               />
             ) : (
               <input
-                id='nombre'
-                {...register('nombre', { required: !isLocal })}
+                id='nombre_cliente'
+                {...register('nombre_cliente', { required: !isLocal })}
                 className='border w-full px-1'
                 type='text'
               />

@@ -16,11 +16,15 @@ export const getPlatillos = async () => {
   }
 };
 
-export const postOrden = async (data) => {
+export const postPedido = async ({ mesa, nombre_cliente, tipo_pedido }) => {
   try {
-    const response = await api.post('/pedidos/', data);
+    const response = await api.post('/pedidos/', {
+      mesa,
+      nombre_cliente,
+      tipo_pedido,
+    });
     return response.data;
   } catch (error) {
     console.error(error);
   }
-}
+};
