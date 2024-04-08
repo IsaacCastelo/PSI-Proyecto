@@ -38,7 +38,6 @@ function App() {
   const [isDomicilio, setIsDomicilio] = useState(false);
   const [pedidos, setPedidos] = useState([]);
   const [pedido, setPedido] = useState({});
-
   /**
    * Add a product to the order.
    * @param {*} e - The event object.
@@ -102,8 +101,7 @@ function App() {
       })
       .then((data) => {
         if (data) {
-          toast.success('Pedido agregado correctamente');
-          location.reload();
+          toast.success('Pedido creado correctamente!');
         } else {
           toast.error('Error al agregar el pedido, intenta de nuevo');
           return;

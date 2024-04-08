@@ -15,7 +15,7 @@ class Platillo(models.Model):
 
 class Pedido(models.Model):
     fecha = models.DateField(auto_now_add=True)
-    estado = models.IntegerField(choices=[(1, 'Pendiente'), (2, 'En proceso'), (3, 'Listo'), (4, 'Entregado')])
+    estado = models.IntegerField(choices=[(1, 'Pendiente'), (2, 'En proceso'), (3, 'Listo'), (4, 'Entregado')], default=1)
     total = models.FloatField(null=True)
     mesa = models.CharField(max_length=10, null=True, blank=True)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
