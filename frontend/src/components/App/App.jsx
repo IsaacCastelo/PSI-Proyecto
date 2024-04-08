@@ -8,7 +8,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
 import { useEffect } from 'react';
-import { getPlatillos } from '../../api/api';
+import { getPlatillos, postOrden } from '../../api/api';
 import './App.css';
 import SideNav from '../SideNav/SideNav';
 import OpenOrders from '../OpenOrders/OpenOrders';
@@ -19,6 +19,7 @@ import EditOrder from '../EditOrder/EditOrder';
 import ViewOrders from '../ViewOrders/ViewOrders';
 import Order from '../Order/Order';
 import DeleteOrders from '../DeleteOrders/DeleteOrders';
+
 
 function App() {
   const [productos, setProductos] = useState([]);
@@ -59,8 +60,17 @@ function App() {
   function onNewOrderSubmit(data) {
     if (productos.length === 0) {
       toast.error('Debes agregar al menos un platillo');
-      return;
-    }
+      // postOrden(data).then((data) => {
+        //   console.log(data);
+        // });
+        
+        return;
+      }else{
+        postOrden(data).then((data) => {
+          console.log(data);
+        });
+      }
+
     console.log(data);
   }
 
