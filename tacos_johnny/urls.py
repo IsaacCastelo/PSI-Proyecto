@@ -23,5 +23,6 @@ urlpatterns = [
 
     path('admin/', admin.site.urls),
     path('api/', include('apps.punto_de_venta.urls')),
+    
 
 ]

@@ -1,7 +1,7 @@
 from django.urls import path
 from .views import (
-    MesaListCreate,
-    MesaDetailUpdateDelete,
+    # MesaListCreate,
+    # MesaDetailUpdateDelete,
     PlatilloListCreate,
     PlatilloDetailUpdateDelete,
     PedidoListCreate,
@@ -16,8 +16,8 @@ from .views import (
 )
 
 urlpatterns = [
-    path('mesas/', MesaListCreate.as_view(), name='mesa-list-create'),
-    path('mesas/<str:pk>/', MesaDetailUpdateDelete.as_view(), name='mesa-detail-update-delete'),
+    # path('mesas/', MesaListCreate.as_view(), name='mesa-list-create'),
+    # path('mesas/<str:pk>/', MesaDetailUpdateDelete.as_view(), name='mesa-detail-update-delete'),
     path('platillos/', PlatilloListCreate.as_view(), name='platillo-list-create'),
     path('platillos/<int:pk>/', PlatilloDetailUpdateDelete.as_view(), name='platillo-detail-update-delete'),
     path('pedidos/', PedidoListCreate.as_view(), name='pedido-list-create'),

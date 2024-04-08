@@ -15,3 +15,12 @@ export const getPlatillos = async () => {
     console.error(error);
   }
 };
+
+export const postOrden = async (data) => {
+  try {
+    const response = await api.post('/pedidos/', data);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+  }
+}
