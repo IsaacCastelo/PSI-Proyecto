@@ -4,7 +4,7 @@ export default function Dashboard() {
   }
 
   function handleEditOrderClick() {
-    window.location.href = '/edit-order';
+    window.location.href = '/edit-orders';
   }
 
   function handleViewOrderClick() {
