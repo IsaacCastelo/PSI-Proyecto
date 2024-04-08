@@ -19,6 +19,7 @@ import EditOrder from '../EditOrder/EditOrder';
 import ViewOrders from '../ViewOrders/ViewOrders';
 import Order from '../Order/Order';
 import DeleteOrders from '../DeleteOrders/DeleteOrders';
+import EditOrders from '../EditOrders/EditOrders';
 
 function App() {
   const [productos, setProductos] = useState([]);
@@ -36,6 +37,7 @@ function App() {
     producto.cantidad = 1;
     setTotal(total + producto.precio);
     setProductos([...productos, producto]);
+    e.target.value = 'INVALIDO';
   }
 
   /**
@@ -106,7 +108,7 @@ function App() {
   function handleProductDelete(id) {
     const newProductos = [...productos];
     newProductos.splice(id, 1);
-    setTotal(total - productos[id].precio);
+    setTotal(total - productos[id].precio * productos[id].cantidad);
     setProductos(newProductos);
   }
 
@@ -154,6 +156,7 @@ function App() {
               />
             }
           />
+          <Route path='/edit-orders' element={<EditOrders />} />
           <Route
             path='/edit-order'
             element={
