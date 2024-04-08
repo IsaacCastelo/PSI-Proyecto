@@ -1,22 +1,26 @@
+import { useNavigate } from 'react-router-dom';
+
 export default function Dashboard() {
+  const navigate = useNavigate();
+
   function handleAddOrderClick() {
-    window.location.href = '/add-order';
+    navigate('/add-order');
   }
 
   function handleEditOrderClick() {
-    window.location.href = '/edit-orders';
+    navigate('/edit-orders');
   }
 
   function handleViewOrderClick() {
-    window.location.href = '/view-orders';
+    navigate('/view-orders');
   }
 
   function handlePayOrderClick() {
-    window.location.href = '/pay-orders';
+    navigate('/pay-orders');
   }
 
   function handleDeleteOrderClick() {
-    window.location.href = '/delete-order';
+    navigate('/delete-orders');
   }
 
   return (

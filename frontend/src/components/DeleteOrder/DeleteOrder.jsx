@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
-import { patchPedido } from '../../api/api';
+import { deletePedido } from '../../api/api';
 import { toast } from 'react-hot-toast';
 
-Order.propTypes = {
+DeleteOrder.propTypes = {
   productos: PropTypes.array.isRequired,
   total: PropTypes.number.isRequired,
   fetchPedido: PropTypes.func.isRequired,
@@ -12,7 +12,7 @@ Order.propTypes = {
   pedido: PropTypes.object.isRequired,
 };
 
-export default function Order({
+export default function DeleteOrder({
   productos,
   total,
   fetchPedido,
@@ -28,10 +28,10 @@ export default function Order({
   }, []);
 
   function handleButtonClick() {
-    patchPedido(id, { estado: 3 }).then(() => {
-      toast.success('Estado de órden actualizado correctamente');
+    deletePedido(id).then(() => {
+      toast.success('Órden cancelada, redireccionando automáticamente');
       setTimeout(() => {
-        navigate('/view-orders/');
+        navigate('/delete-orders/');
       }, 2000);
     });
   }
@@ -62,22 +62,19 @@ export default function Order({
               </tr>
             ))}
             <tr>
-              <td></td>
               <td>Total: </td>
-              <td>${total}</td>
+              <td>{total}</td>
             </tr>
           </tbody>
         </table>
       </div>
-      {pedido.estado !== 4 && (
-        <button
-          type='button'
-          onClick={handleButtonClick}
-          className='w-full my-3 p-2 bg-green-700 text-white rounded shadow-md'
-        >
-          Marcar como completada(No pagada)
-        </button>
-      )}
+      <button
+        type='button'
+        onClick={handleButtonClick}
+        className='w-full my-3 p-2 bg-red-700 text-white rounded shadow-md'
+      >
+        Cancelar órden
+      </button>
     </section>
   );
 }

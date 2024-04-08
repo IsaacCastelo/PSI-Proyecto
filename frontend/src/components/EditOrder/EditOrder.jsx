@@ -1,6 +1,8 @@
 import PropTypes from 'prop-types';
 import toast from 'react-hot-toast';
 import { useForm } from 'react-hook-form';
+import { useParams } from 'react-router-dom';
+import { useEffect } from 'react';
 
 EditOrder.propTypes = {
   onSubmit: PropTypes.func.isRequired,
@@ -10,26 +12,64 @@ EditOrder.propTypes = {
   onProductIncrease: PropTypes.func.isRequired,
   onNoteChange: PropTypes.func.isRequired,
   onProductDelete: PropTypes.func.isRequired,
-  onRadioChange: PropTypes.func.isRequired,
   isLocal: PropTypes.bool.isRequired,
   onPlatilloChange: PropTypes.func.isRequired,
   platillos: PropTypes.array.isRequired,
+  isDomicilio: PropTypes.bool.isRequired,
+  setIsLocal: PropTypes.func.isRequired,
+  setIsDomicilio: PropTypes.func.isRequired,
+  onRadioChange: PropTypes.func.isRequired,
+  setPlatillos: PropTypes.func.isRequired,
+  pedido: PropTypes.object.isRequired,
+  setPedido: PropTypes.func.isRequired,
+  fetchPedido: PropTypes.func.isRequired,
+  fetchDetallesPedido: PropTypes.func.isRequired,
 };
 
 export default function EditOrder({
   onSubmit,
   productos,
   total,
+  pedido,
+  setPedido,
+  setIsLocal,
+  setIsDomicilio,
   onProductDecrease,
   onProductIncrease,
   onNoteChange,
   onProductDelete,
-  onRadioChange,
   isLocal,
   onPlatilloChange,
   platillos,
+  isDomicilio,
+  onRadioChange,
+  fetchPedido,
+  fetchDetallesPedido,
 }) {
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit, resetField } = useForm();
+  const { id } = useParams();
+
+  useEffect(() => {
+    fetchPedido(id);
+    fetchDetallesPedido(id);
+  }, []);
+
+  useEffect(() => {
+    if (pedido.tipo_pedido === 1) {
+      setIsLocal(true);
+      setIsDomicilio(false);
+    }
+
+    if (pedido.tipo_pedido === 2) {
+      setIsDomicilio(true);
+      setIsLocal(false);
+    }
+
+    if (pedido.tipo_pedido === 3) {
+      setIsLocal(false);
+      setIsDomicilio(false);
+    }
+  }, [pedido, setIsLocal, setIsDomicilio]);
 
   return (
     <section className='w-full'>
@@ -39,7 +79,10 @@ export default function EditOrder({
       </header>
       <div className='flex p-4 shadow-md'>
         <form
-          onSubmit={handleSubmit(onSubmit)}
+          onSubmit={handleSubmit((data) => {
+            data.tipo_pedido = parseInt(pedido.tipo_pedido);
+            onSubmit(data, pedido.id);
+          })}
           className='flex w-1/3 shrink-0 flex-col gap-4 px-4'
         >
           <fieldset>
@@ -50,8 +93,13 @@ export default function EditOrder({
                 id='local'
                 {...register('tipo_pedido')}
                 value='1'
-                defaultChecked
-                onChange={onRadioChange}
+                checked={pedido.tipo_pedido === 1}
+                onClick={(e) => {
+                  onRadioChange(e);
+                  resetField('nombre');
+                  resetField('direccion');
+                  setPedido({ ...pedido, tipo_pedido: 1 });
+                }}
               />
               <label className='p-1' htmlFor='local'>
                 Local
@@ -62,8 +110,13 @@ export default function EditOrder({
                 type='radio'
                 id='domicilio'
                 {...register('tipo_pedido')}
+                checked={pedido.tipo_pedido === 2}
+                onClick={(e) => {
+                  onRadioChange(e);
+                  resetField('mesa');
+                  setPedido({ ...pedido, tipo_pedido: 2 });
+                }}
                 value='2'
-                onChange={onRadioChange}
               />
               <label className='p-1' htmlFor='domicilio'>
                 Domicilio
@@ -75,21 +128,30 @@ export default function EditOrder({
                 id='recoger'
                 {...register('tipo_pedido')}
                 value='3'
-                onChange={onRadioChange}
+                checked={pedido.tipo_pedido === 3}
+                onClick={(e) => {
+                  onRadioChange(e);
+                  resetField('mesa');
+                  resetField('direccion');
+                  setPedido({ ...pedido, tipo_pedido: 3 });
+                }}
               />
               <label className='p-1' htmlFor='recoger'>
                 Recoger
               </label>
             </div>
             <legend className='font-semibold'>
-              {isLocal
-                ? 'Introduce la mesa*'
-                : 'Introduce el nombre del cliente*'}
+              {isLocal ? 'Mesa*' : 'Nombre del cliente*'}
             </legend>
             {isLocal ? (
               <input
                 id='mesa'
-                {...register('mesa', { required: isLocal })}
+                {...register('mesa', {
+                  required: isLocal,
+                  value: pedido.mesa,
+                  defaultValue: '',
+                })}
+                defaultValue={pedido.mesa}
                 className='border w-full px-1'
                 type='number'
                 min='1'
@@ -97,20 +159,37 @@ export default function EditOrder({
               />
             ) : (
               <input
-                id='nombre'
-                {...register('nombre', { required: !isLocal })}
+                id='nombre_cliente'
+                {...register('nombre_cliente', {
+                  required: !isLocal,
+                  value: pedido.nombre_cliente,
+                  defaultValue: '',
+                })}
                 className='border w-full px-1'
                 type='text'
               />
             )}
-
+            {isDomicilio && (
+              <>
+                <legend className='font-semibold'>Dirección*</legend>
+                <input
+                  id='direccion'
+                  {...register('direccion', {
+                    required: isDomicilio,
+                    value: pedido.direccion,
+                  })}
+                  className='border w-full p-1'
+                  type='text'
+                  placeholder='Dirección'
+                />
+              </>
+            )}
             <legend className='font-semibold'>Selecciona el platillo*</legend>
             <select
               className='w-full rounded border p-2'
               id='menu'
               onChangeCapture={onPlatilloChange}
               defaultValue={'INVALIDO'}
-              {...register('platillo', { required: true })}
             >
               <option disabled value='INVALIDO'>
                 -- Selecciona un platillo --
@@ -162,6 +241,7 @@ export default function EditOrder({
                   <textarea
                     onInput={(e) => onNoteChange(i, e)}
                     name='nota'
+                    defaultValue={producto.notas}
                     className='w-full border'
                   ></textarea>
                 </td>

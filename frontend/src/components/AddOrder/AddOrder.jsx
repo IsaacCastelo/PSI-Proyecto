@@ -14,6 +14,7 @@ AddOrder.propTypes = {
   isLocal: PropTypes.bool.isRequired,
   onPlatilloChange: PropTypes.func.isRequired,
   platillos: PropTypes.array.isRequired,
+  isDomicilio: PropTypes.bool.isRequired,
 };
 
 export default function AddOrder({
@@ -28,8 +29,17 @@ export default function AddOrder({
   isLocal,
   onPlatilloChange,
   platillos,
+  isDomicilio,
 }) {
-  const { register, handleSubmit } = useForm();
+  const { handleSubmit, reset, resetField, register } = useForm();
+
+  function handleRadioChange(e) {
+    onRadioChange(e);
+
+    resetField('mesa');
+    resetField('nombre_cliente');
+    resetField('direccion');
+  }
 
   return (
     <section className='w-full'>
@@ -39,7 +49,10 @@ export default function AddOrder({
       </header>
       <div className='flex p-4 shadow-md'>
         <form
-          onSubmit={handleSubmit(onSubmit)}
+          onSubmit={handleSubmit((data) => {
+            onSubmit(data);
+            reset();
+          })}
           className='flex w-1/3 shrink-0 flex-col gap-4 px-4'
         >
           <fieldset>
@@ -48,10 +61,10 @@ export default function AddOrder({
               <input
                 type='radio'
                 id='local'
-                {...register('tipo_pedido')}
+                {...register('tipo_pedido', { defaultChecked: true })}
                 value='1'
                 defaultChecked
-                onChange={onRadioChange}
+                onChange={handleRadioChange}
               />
               <label className='p-1' htmlFor='local'>
                 Local
@@ -63,7 +76,7 @@ export default function AddOrder({
                 id='domicilio'
                 {...register('tipo_pedido')}
                 value='2'
-                onChange={onRadioChange}
+                onChange={handleRadioChange}
               />
               <label className='p-1' htmlFor='domicilio'>
                 Domicilio
@@ -75,7 +88,7 @@ export default function AddOrder({
                 id='recoger'
                 {...register('tipo_pedido')}
                 value='3'
-                onChange={onRadioChange}
+                onChange={handleRadioChange}
               />
               <label className='p-1' htmlFor='recoger'>
                 Recoger
@@ -89,7 +102,7 @@ export default function AddOrder({
             {isLocal ? (
               <input
                 id='mesa'
-                {...register('mesa', { required: isLocal })}
+                {...register('mesa', { required: isLocal, defaultValue: '' })}
                 className='border w-full px-1'
                 type='number'
                 min='1'
@@ -98,12 +111,29 @@ export default function AddOrder({
             ) : (
               <input
                 id='nombre_cliente'
-                {...register('nombre_cliente', { required: !isLocal })}
+                {...register('nombre_cliente', {
+                  required: !isLocal,
+                  defaultValue: '',
+                })}
                 className='border w-full px-1'
                 type='text'
               />
             )}
-
+            {isDomicilio && (
+              <>
+                <legend className='font-semibold'>Dirección*</legend>
+                <input
+                  id='direccion'
+                  {...register('direccion', {
+                    required: isDomicilio,
+                    defaultValue: '',
+                  })}
+                  className='border w-full p-1'
+                  type='text'
+                  placeholder='Dirección'
+                />
+              </>
+            )}
             <legend className='font-semibold'>Selecciona el platillo*</legend>
             <select
               className='w-full rounded border p-2'
