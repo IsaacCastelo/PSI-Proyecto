@@ -46,6 +46,10 @@ class PedidoDetailUpdateDelete(generics.RetrieveUpdateDestroyAPIView):
 class DetallePedidoListCreate(generics.ListCreateAPIView):
     queryset = DetallePedido.objects.all()
     serializer_class = DetallePedidoSerializer
+    
+class DetallePedidoDetailUpdateDelete(generics.RetrieveUpdateDestroyAPIView):
+    queryset = DetallePedido.objects.all()
+    serializer_class = DetallePedidoSerializer
 
 class IngresoDiarioListCreate(generics.ListCreateAPIView):
     queryset = IngresoDiario.objects.all()
