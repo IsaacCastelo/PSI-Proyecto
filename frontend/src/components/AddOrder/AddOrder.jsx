@@ -110,7 +110,6 @@ export default function AddOrder({
               id='menu'
               onChangeCapture={onPlatilloChange}
               defaultValue={'INVALIDO'}
-              {...register('platillo', { required: true })}
             >
               <option disabled value='INVALIDO'>
                 -- Selecciona un platillo --
