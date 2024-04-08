@@ -9,7 +9,7 @@ from .models import Platillo, Pedido, DetallePedido, IngresoDiario, Movimiento, 
 class PlatilloSerializer(serializers.ModelSerializer):
     class Meta:
         model = Platillo
-        fields = ('estado', 'mesa', '')
+        fields = '__all__'
 
 class PedidoSerializer(serializers.ModelSerializer):
     class Meta:
