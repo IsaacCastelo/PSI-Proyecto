@@ -1,6 +1,7 @@
 from rest_framework import generics
 from .models import Platillo, Pedido, DetallePedido, IngresoDiario, Movimiento, Reporte
 from .serializers import PlatilloSerializer, PedidoSerializer, DetallePedidoSerializer, IngresoDiarioSerializer, MovimientoSerializer, ReporteSerializer
+from django.contrib.auth.models import User
 from datetime import datetime
 
 # class MesaListCreate(generics.ListCreateAPIView):
@@ -24,11 +25,17 @@ class PedidoListCreate(generics.ListCreateAPIView):
     serializer_class = PedidoSerializer
 
     def perform_create(self, serializer):
-        serializer.save(
-            created_by=self.request.created_by,
-            estado='Pendiente',
+        print('POST', serializer)
+        return serializer.save(
+            created_by= User.objects.get(username='admin'),
+            estado=1,
             fecha=datetime.now().date()
         )
+        # serializer.save(
+        #     created_by=self.request.user,
+        #     estado='Pendiente',
+        #     fecha=datetime.now().date()
+        # )
 
 
 
