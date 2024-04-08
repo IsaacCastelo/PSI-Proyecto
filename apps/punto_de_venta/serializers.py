@@ -14,7 +14,7 @@ class PlatilloSerializer(serializers.ModelSerializer):
 class PedidoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Pedido
-        fields = ('mesa', 'tipo_pedido', 'id', 'nombre_cliente')
+        fields = ('mesa', 'tipo_pedido', 'id', 'nombre_cliente', 'direccion', 'estado', 'total', 'cambio', 'pago')
 
 class DetallePedidoSerializer(serializers.ModelSerializer):
     class Meta:
