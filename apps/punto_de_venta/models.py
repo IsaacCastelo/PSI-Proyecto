@@ -17,18 +17,19 @@ class Pedido(models.Model):
     fecha = models.DateField(auto_now_add=True)
     estado = models.IntegerField(choices=[(1, 'Pendiente'), (2, 'En proceso'), (3, 'Listo'), (4, 'Entregado')])
     total = models.FloatField(null=True)
-    mesa = models.CharField(max_length=10, null=True)
+    mesa = models.CharField(max_length=10, null=True, blank=True)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     tipo_pago = models.CharField(max_length=255, null=True)
     cambio = models.FloatField(default=0.0)
     pago = models.FloatField(default=0.0)
     tipo_pedido = models.IntegerField(choices=[(1, 'Local'), (2, 'Domicilio'), (3, 'Recoger')])
     nombre_cliente = models.CharField(max_length=255, null=True)
+    direccion = models.CharField(max_length=255, null=True, blank=True)
 
 class DetallePedido(models.Model):
     cantidad = models.IntegerField()
     precio = models.FloatField()
-    notas = models.CharField(max_length=500)
+    notas = models.CharField(max_length=500, blank=True)
     platillo = models.ForeignKey(Platillo, on_delete=models.CASCADE)
     pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE)
 
