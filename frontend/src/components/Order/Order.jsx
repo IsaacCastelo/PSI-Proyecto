@@ -69,7 +69,7 @@ export default function Order({
           </tbody>
         </table>
       </div>
-      {pedido.estado !== 4 && (
+      {pedido.estado == 1 && (
         <button
           type='button'
           onClick={handleButtonClick}
