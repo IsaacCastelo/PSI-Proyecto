@@ -212,13 +212,8 @@ function App() {
     setProductos(newProductos);
 
     deleteDetallePedido(productos[id].id).then((res) => {
-      if (res?.status === 204) {
+      if (res?.status === 204 || res?.status === 404) {
         toast.success('Producto eliminado correctamente');
-      } else {
-        toast.error(
-          'Error al eliminar el producto, refresca la página e intenta de nuevo'
-        );
-        return;
       }
     });
   }
@@ -237,15 +232,17 @@ function App() {
   async function fetchPedido(id) {
     const pedido = await getPedido(id);
     setPedido(pedido);
+    return pedido;
   }
   async function fetchDetallesPedido(id) {
     const productos = await getDetallesPedido(id);
     setProductos(productos);
+    return productos;
   }
 
   function fetchPlatillos() {
-    getPlatillos().then((platillos) => {
-      setPlatillos(platillos);
+    getPlatillos().then((data) => {
+      setPlatillos(data);
     });
   }
 

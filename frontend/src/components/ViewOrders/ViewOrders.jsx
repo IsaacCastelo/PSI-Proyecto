@@ -17,7 +17,7 @@ export default function ViewOrders({ pedidos, setPedidos }) {
 
   useEffect(() => {
     getPedidos().then((pedidos) => {
-      setPedidos(pedidos);
+      setPedidos(pedidos.sort((a, b) => a.estado - b.estado));
     });
   }, [setPedidos]);
 

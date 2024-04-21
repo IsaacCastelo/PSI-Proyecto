@@ -123,6 +123,9 @@ export const deleteDetallePedido = async (id) => {
     const response = await api.delete(`/detalles-pedido/${id}/`);
     return response;
   } catch (error) {
+    if (error.response.status === 404) {
+      return;
+    }
     console.error(error);
   }
 };

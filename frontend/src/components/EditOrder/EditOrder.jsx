@@ -2,7 +2,8 @@ import PropTypes from 'prop-types';
 import toast from 'react-hot-toast';
 import { useForm } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useEffect, useState, useRef } from 'react';
+import { validateNote } from '../../utils/validators';
 
 EditOrder.propTypes = {
   onSubmit: PropTypes.func.isRequired,
@@ -48,10 +49,61 @@ export default function EditOrder({
 }) {
   const { register, handleSubmit, resetField } = useForm();
   const { id } = useParams();
+  const [isEdited, setIsEdited] = useState(false);
+  const initialPedido = useRef(pedido);
+  const initialProductos = useRef(productos);
+
+  function checkIfPedidoChanged() {
+    if (initialPedido.current.mesa === null && pedido.mesa == '') {
+      setIsEdited(false);
+      return;
+    }
+
+    if (initialPedido.current.direccion === null && pedido.direccion == '') {
+      setIsEdited(false);
+      return;
+    }
+
+    if (
+      initialPedido.current.nombre_cliente === null &&
+      pedido.nombre_cliente == ''
+    ) {
+      setIsEdited(false);
+      return;
+    }
+
+    setIsEdited(true);
+  }
+
+  function checkIfProductosChanged() {
+    if (initialProductos.current.length !== productos.length) {
+      setIsEdited(true);
+      return;
+    }
+
+    for (let i = 0; i < productos.length; i++) {
+      if (
+        initialProductos.current[i].id !== productos[i].id ||
+        initialProductos.current[i].cantidad !== productos[i].cantidad ||
+        initialProductos.current[i].notas !== productos[i].notas
+      ) {
+        setIsEdited(true);
+        return;
+      }
+    }
+    setIsEdited(false);
+  }
+  useEffect(() => {
+    async function fetchDetallesOrden() {
+      await fetchPedido(id);
+      await fetchDetallesPedido(id);
+    }
+    fetchDetallesOrden();
+  }, []);
 
   useEffect(() => {
-    fetchPedido(id);
-    fetchDetallesPedido(id);
+    initialPedido.current = pedido;
+    initialProductos.current = productos;
   }, []);
 
   useEffect(() => {
@@ -99,6 +151,7 @@ export default function EditOrder({
                   resetField('nombre');
                   resetField('direccion');
                   setPedido({ ...pedido, tipo_pedido: 1 });
+                  checkIfPedidoChanged();
                 }}
               />
               <label className='p-1' htmlFor='local'>
@@ -115,6 +168,7 @@ export default function EditOrder({
                   onRadioChange(e);
                   resetField('mesa');
                   setPedido({ ...pedido, tipo_pedido: 2 });
+                  checkIfPedidoChanged();
                 }}
                 value='2'
               />
@@ -134,6 +188,7 @@ export default function EditOrder({
                   resetField('mesa');
                   resetField('direccion');
                   setPedido({ ...pedido, tipo_pedido: 3 });
+                  checkIfPedidoChanged();
                 }}
               />
               <label className='p-1' htmlFor='recoger'>
@@ -153,6 +208,10 @@ export default function EditOrder({
                 })}
                 defaultValue={pedido.mesa}
                 className='border w-full px-1'
+                onChange={(e) => {
+                  setPedido({ ...pedido, mesa: e.target.value });
+                  checkIfPedidoChanged();
+                }}
                 type='number'
                 min='1'
                 max='10'
@@ -166,6 +225,10 @@ export default function EditOrder({
                   defaultValue: '',
                 })}
                 className='border w-full px-1'
+                onChange={(e) => {
+                  setPedido({ ...pedido, nombre_cliente: e.target.value });
+                  checkIfPedidoChanged();
+                }}
                 type='text'
               />
             )}
@@ -181,6 +244,10 @@ export default function EditOrder({
                   className='border w-full p-1'
                   type='text'
                   placeholder='Dirección'
+                  onChange={(e) => {
+                    setPedido({ ...pedido, direccion: e.target.value });
+                    checkIfPedidoChanged();
+                  }}
                 />
               </>
             )}
@@ -188,7 +255,10 @@ export default function EditOrder({
             <select
               className='w-full rounded border p-2'
               id='menu'
-              onChangeCapture={onPlatilloChange}
+              onChangeCapture={(e) => {
+                onPlatilloChange(e);
+                setIsEdited(true);
+              }}
               defaultValue={'INVALIDO'}
             >
               <option disabled value='INVALIDO'>
@@ -205,7 +275,8 @@ export default function EditOrder({
           </fieldset>
           <button
             type='submit'
-            className='w-full p-2 bg-gray-700 text-white rounded shadow-md'
+            disabled={!isEdited}
+            className='w-full p-2 bg-gray-700 text-white rounded shadow-md disabled:opacity-50 disabled:cursor-not-allowed'
           >
             Guardar
           </button>
@@ -224,14 +295,20 @@ export default function EditOrder({
                 <td>{producto.nombre}</td>
                 <td>
                   <button
-                    onClick={() => onProductDecrease(i)}
+                    onClick={() => {
+                      onProductDecrease(i);
+                      checkIfProductosChanged();
+                    }}
                     className='material-icons align-middle'
                   >
                     remove
                   </button>
                   {producto?.cantidad}
                   <button
-                    onClick={() => onProductIncrease(i)}
+                    onClick={() => {
+                      onProductIncrease(i);
+                      checkIfProductosChanged();
+                    }}
                     className='material-icons align-middle'
                   >
                     add
@@ -239,7 +316,14 @@ export default function EditOrder({
                 </td>
                 <td>
                   <textarea
-                    onInput={(e) => onNoteChange(i, e)}
+                    onChange={(e) => {
+                      if (!validateNote(e)) {
+                        toast.error('Caracter no admitido en la nota');
+                        return;
+                      }
+                      onNoteChange(i, e);
+                      checkIfProductosChanged();
+                    }}
                     name='nota'
                     defaultValue={producto.notas}
                     className='w-full border'
@@ -247,7 +331,10 @@ export default function EditOrder({
                 </td>
                 <td>
                   <button
-                    onClick={() => onProductDelete(i)}
+                    onClick={() => {
+                      onProductDelete(i);
+                      checkIfProductosChanged();
+                    }}
                     className='material-icons'
                   >
                     delete_forever

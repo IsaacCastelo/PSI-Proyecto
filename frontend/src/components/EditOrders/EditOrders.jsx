@@ -17,7 +17,7 @@ export default function EditOrders({ pedidos, setPedidos }) {
 
   useEffect(() => {
     getPedidos().then((pedidos) => {
-      setPedidos(pedidos);
+      setPedidos(pedidos.filter((pedido) => pedido.estado != 4));
     });
   }, [setPedidos]);
 
