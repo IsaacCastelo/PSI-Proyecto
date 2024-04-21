@@ -46,7 +46,10 @@ export default function ViewOrders({ pedidos, setPedidos }) {
               <tr key={pedido.id}>
                 <td>{getEstado(pedido.estado)}</td>
                 <td>
-                  {pedido.nombre_cliente ? pedido.nombre_cliente : pedido.mesa}
+                  {pedido.tipo_pedido === 1
+                    ? pedido.mesa
+                    : pedido.nombre_cliente}
+                  {}
                 </td>
                 <td>
                   <button
