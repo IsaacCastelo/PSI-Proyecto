@@ -97,10 +97,21 @@ export default function OpenOrder({
               setPago(e.target.value);
               setCambio(e.target.value - total);
             }}
-            className='border w-full'
+            className={
+              pago < total ? 'border border-red-500 w-full' : 'border w-full'
+            }
             type='number'
             min='1'
           />
+          <span
+            className={
+              pago < total
+                ? 'text-sm text-gray-500'
+                : 'text-sm text-gray-500 hidden'
+            }
+          >
+            {pago < total ? 'Introduzca una cantidad válida.' : ''}
+          </span>
           <legend className='font-semibold'>Se entrega: </legend>
           <input
             className='border w-full'
@@ -111,7 +122,8 @@ export default function OpenOrder({
           />
           <button
             type='submit'
-            className='w-full p-2 bg-green-500 text-white rounded shadow-md'
+            disabled={pago < total}
+            className='w-full p-2 bg-green-500 text-white rounded shadow-md disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-green-600'
           >
             Pagar
           </button>
