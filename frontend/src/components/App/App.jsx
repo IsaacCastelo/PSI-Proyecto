@@ -37,6 +37,7 @@ import EmployeesDashboard from '../EmployeesDashboard/EmployeesDashboard';
 import AddEmployee from '../AddEmployee/AddEmployee';
 import EmployeeList from '../EmployeeList/EmployeeList';
 import EditEmployee from '../EditEmployee/EditEmployee';
+import Login from '../Login/Login';
 
 function App() {
   const [productos, setProductos] = useState([]);
@@ -46,6 +47,8 @@ function App() {
   const [isDomicilio, setIsDomicilio] = useState(false);
   const [pedidos, setPedidos] = useState([]);
   const [pedido, setPedido] = useState({});
+  const [isLogged, setIsLogged] = useState(false);
+
   /**
    * Add a product to the order.
    * @param {*} e - The event object.
@@ -273,8 +276,9 @@ function App() {
   return (
     <main className='flex h-screen'>
       <Router>
-        <SideNav />
+        <SideNav isLogged={isLogged} setIsLogged={setIsLogged} />
         <Routes>
+          <Route path='/login' element={<Login setIsLogged={setIsLogged} />} />
           <Route path='/products' element={<ProductsDashboard />} />
           <Route path='/add-product' element={<AddProduct />} />
           <Route path='/edit-product' element={<EditProduct />} />
