@@ -29,6 +29,14 @@ import Order from '../Order/Order';
 import DeleteOrders from '../DeleteOrders/DeleteOrders';
 import EditOrders from '../EditOrders/EditOrders';
 import DeleteOrder from '../DeleteOrder/DeleteOrder';
+import ProductsDashboard from '../ProductsDashboard/ProductsDashboard';
+import AddProduct from '../AddProduct/AddProduct';
+import ProductsList from '../ProductsList/ProductsList';
+import EditProduct from '../EditProduct/EditProduct';
+import EmployeesDashboard from '../EmployeesDashboard/EmployeesDashboard';
+import AddEmployee from '../AddEmployee/AddEmployee';
+import EmployeeList from '../EmployeeList/EmployeeList';
+import EditEmployee from '../EditEmployee/EditEmployee';
 
 function App() {
   const [productos, setProductos] = useState([]);
@@ -264,9 +272,21 @@ function App() {
 
   return (
     <main className='flex h-screen'>
-      <SideNav />
       <Router>
+        <SideNav />
         <Routes>
+          <Route path='/products' element={<ProductsDashboard />} />
+          <Route path='/add-product' element={<AddProduct />} />
+          <Route path='/edit-product' element={<EditProduct />} />
+          <Route
+            path='/view-products'
+            element={<ProductsList platillos={platillos} />}
+          />
+
+          <Route path='employees' element={<EmployeesDashboard />} />
+          <Route path='/add-employee' element={<AddEmployee />} />
+          <Route path='/edit-employee' element={<EditEmployee />} />
+          <Route path='/employee-list' element={<EmployeeList />} />
           <Route path='/dashboard' element={<Dashboard />} />
           <Route
             path='/add-order'
