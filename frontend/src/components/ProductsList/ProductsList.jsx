@@ -1,26 +1,64 @@
 import PropTypes from 'prop-types';
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { deletePlatillo, getPlatillos } from '../../api/api';
 import Modal from '../Modal/Modal';
+import toast from 'react-hot-toast';
 
 ProductsList.propTypes = {
   platillos: PropTypes.array.isRequired,
+  setPlatillos: PropTypes.func.isRequired,
 };
 
-export default function ProductsList({ platillos }) {
+export default function ProductsList({ platillos, setPlatillos }) {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
+  // Add a state variable to track if the data has been loaded
+  const [isLoading, setIsLoading] = useState(true);
+  const id = useRef(null);
 
-  function handleEditClick() {
-    navigate('/edit-product');
+  function handleEditClick(id) {
+    navigate(`/edit-product/${id}`);
   }
 
-  function handleDeleteClick() {
+  function handleDeleteClick(platilloId) {
     setIsOpen(true);
+    id.current = platilloId;
+  }
+
+  async function handleDeleteConfirmation() {
+    const res = await deletePlatillo(id.current);
+    if (res.status === 204) {
+      setPlatillos(platillos.filter((platillo) => platillo.id !== id.current));
+    }
+    closeModal();
+    toast.success('Producto eliminado');
   }
 
   function closeModal() {
     setIsOpen(false);
+  }
+
+  useEffect(() => {
+    // Fetch the platillos data
+    getPlatillos()
+      .then((data) => {
+        setPlatillos(data.filter((platillo) => platillo.activo));
+        setIsLoading(false); // Set isLoading to false once the data is loaded
+      })
+      .catch((error) => {
+        console.error(error);
+        setIsLoading(false); // Set isLoading to false if there's an error
+      });
+  }, []);
+
+  // Render a loading state while the data is being fetched
+  if (isLoading) {
+    return (
+      <div className='flex items-center justify-center w-full h-full animate-spin'>
+        <span className='material-icons animate-spin rotate-90'>update</span>
+      </div>
+    );
   }
 
   return (
@@ -40,7 +78,7 @@ export default function ProductsList({ platillos }) {
             </tr>
           </thead>
           <tbody>
-            {platillos.length ? (
+            {platillos?.length ? (
               platillos.map((platillo) => (
                 <tr key={platillo.id}>
                   <td>{platillo.nombre}</td>
@@ -49,13 +87,13 @@ export default function ProductsList({ platillos }) {
                   <td>
                     <button
                       className='material-icons'
-                      onClick={handleEditClick}
+                      onClick={() => handleEditClick(platillo.id)}
                     >
                       edit
                     </button>
                     <button
                       className='material-icons'
-                      onClick={handleDeleteClick}
+                      onClick={() => handleDeleteClick(platillo.id)}
                     >
                       delete
                     </button>
@@ -84,7 +122,7 @@ export default function ProductsList({ platillos }) {
           </button>
           <button
             className='bg-red-600 rounded text-white font-bold'
-            onClick={closeModal}
+            onClick={() => handleDeleteConfirmation()}
           >
             Eliminar
           </button>
