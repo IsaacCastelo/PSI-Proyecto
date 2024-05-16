@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 export default function EmployeesDashboard() {
@@ -18,6 +19,10 @@ export default function EmployeesDashboard() {
   function handleDeleteEmployeeClick() {
     navigate('/employee-list');
   }
+
+  useEffect(() => {
+    document.title = 'Administrar empleados';
+  }, []);
 
   return (
     <section className='w-full p-12'>
