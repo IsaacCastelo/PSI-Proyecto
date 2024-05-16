@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 export default function Dashboard() {
@@ -22,6 +23,10 @@ export default function Dashboard() {
   function handleDeleteOrderClick() {
     navigate('/delete-orders');
   }
+
+  useEffect(() => {
+    document.title = 'Administrar órdenes';
+  }, []);
 
   return (
     <section className='w-full p-12'>
