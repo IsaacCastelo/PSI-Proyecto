@@ -2,6 +2,7 @@ from django.urls import path
 from .views import (
     # MesaListCreate,
     # MesaDetailUpdateDelete,
+    CustomAuthToken,
     PlatilloListCreate,
     PlatilloDetailUpdateDelete,
     PedidoListCreate,
@@ -14,11 +15,11 @@ from .views import (
     MovimientoDetailUpdateDelete,
     ReporteListCreate,
     ReporteDetailUpdateDelete,
+    UsuarioDetailUpdateDelete,
+    UsuarioListCreate,
 )
 
 urlpatterns = [
-    # path('mesas/', MesaListCreate.as_view(), name='mesa-list-create'),
-    # path('mesas/<str:pk>/', MesaDetailUpdateDelete.as_view(), name='mesa-detail-update-delete'),
     path('platillos/', PlatilloListCreate.as_view(), name='platillo-list-create'),
     path('platillos/<int:pk>/', PlatilloDetailUpdateDelete.as_view(), name='platillo-detail-update-delete'),
     path('pedidos/', PedidoListCreate.as_view(), name='pedido-list-create'),
@@ -31,4 +32,7 @@ urlpatterns = [
     path('movimientos/<int:pk>/', MovimientoDetailUpdateDelete.as_view(), name='movimiento-detail-update-delete'),
     path('reportes/', ReporteListCreate.as_view(), name='reporte-list-create'),
     path('reportes/<int:pk>/', ReporteDetailUpdateDelete.as_view(), name='reporte-detail-update-delete'),
+    path('usuarios/', UsuarioListCreate.as_view(), name='usuario-list-create'),
+    path('usuarios/<int:pk>/', UsuarioDetailUpdateDelete.as_view(), name='usuario-detail-update-delete'),
+    path('auth/', CustomAuthToken.as_view(), name='auth'),
 ]
