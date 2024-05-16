@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { patchPedido } from '../../api/api';
 import { toast } from 'react-hot-toast';
 
@@ -10,6 +10,7 @@ Order.propTypes = {
   fetchPedido: PropTypes.func.isRequired,
   fetchDetallesPedido: PropTypes.func.isRequired,
   pedido: PropTypes.object.isRequired,
+  platillos: PropTypes.array.isRequired,
 };
 
 export default function Order({
@@ -18,13 +19,22 @@ export default function Order({
   fetchPedido,
   fetchDetallesPedido,
   pedido,
+  platillos,
 }) {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     fetchPedido(id);
-    fetchDetallesPedido(id);
+    fetchDetallesPedido(id)
+      .then(() => {
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        console.error(error);
+        setIsLoading(false);
+      });
   }, []);
 
   function handleButtonClick() {
@@ -34,6 +44,14 @@ export default function Order({
         navigate('/view-orders/');
       }, 2000);
     });
+  }
+
+  if (isLoading) {
+    return (
+      <div className='flex items-center justify-center w-full h-full animate-spin'>
+        <span className='material-icons animate-spin rotate-90'>update</span>
+      </div>
+    );
   }
 
   return (
@@ -54,13 +72,17 @@ export default function Order({
             </tr>
           </thead>
           <tbody>
-            {productos.map((detalle) => (
-              <tr key={detalle.id}>
-                <td>{detalle.nombre}</td>
-                <td>{detalle.cantidad}</td>
-                <td>{detalle.notas}</td>
-              </tr>
-            ))}
+            {productos.map((detalle) => {
+              return (
+                detalle.nombre && (
+                  <tr key={detalle.id}>
+                    <td>{detalle.nombre}</td>
+                    <td>{detalle.cantidad}</td>
+                    <td>{detalle.notas}</td>
+                  </tr>
+                )
+              );
+            })}
             <tr>
               <td></td>
               <td>Total: </td>
