@@ -38,6 +38,8 @@ import AddEmployee from '../AddEmployee/AddEmployee';
 import EmployeeList from '../EmployeeList/EmployeeList';
 import EditEmployee from '../EditEmployee/EditEmployee';
 import Login from '../Login/Login';
+import { AuthProvider } from '../../hooks/AuthProvider';
+import { ProtectedRoute } from '../../utils/ProtectedRoute';
 
 function App() {
   const [productos, setProductos] = useState([]);
@@ -47,7 +49,6 @@ function App() {
   const [isDomicilio, setIsDomicilio] = useState(false);
   const [pedidos, setPedidos] = useState([]);
   const [pedido, setPedido] = useState({});
-  const [isLogged, setIsLogged] = useState(false);
 
   /**
    * Add a product to the order.
@@ -124,6 +125,12 @@ function App() {
       });
   }
 
+  /**
+   * Handle the form submission to edit an order.
+   * @param {*} data - The form data.
+   * @param {*} id - The id of the order to edit.
+   * @returns {Promise<void>}
+   */
   function onEditOrderSubmit(data, id) {
     if (productos.length === 0) {
       toast.error('Debes agregar al menos un platillo');
@@ -263,136 +270,164 @@ function App() {
 
   useEffect(() => {
     productos.forEach((producto) => {
-      if (producto.nombre === undefined)
-        producto.nombre = platillos[producto.platillo - 1]?.nombre;
+      if (producto.nombre === undefined) {
+        const platillo = platillos.find(
+          (platillo) => platillo.id === producto.platillo
+        );
+        if (platillo) {
+          producto.nombre = platillo.nombre;
+          producto.precio = platillo.precio;
+        }
+      }
     });
     const total = productos.reduce(
       (acc, producto) => acc + producto.precio * producto.cantidad,
       0
     );
     setTotal(total);
-  }, [productos]);
+  });
 
   return (
     <main className='flex h-screen'>
       <Router>
-        <SideNav isLogged={isLogged} setIsLogged={setIsLogged} />
-        <Routes>
-          <Route path='/login' element={<Login setIsLogged={setIsLogged} />} />
-          <Route path='/products' element={<ProductsDashboard />} />
-          <Route path='/add-product' element={<AddProduct />} />
-          <Route path='/edit-product' element={<EditProduct />} />
-          <Route
-            path='/view-products'
-            element={<ProductsList platillos={platillos} />}
-          />
+        <AuthProvider>
+          <ProtectedRoute>
+            <SideNav />
+            <Routes>
+              <Route path='/products' element={<ProductsDashboard />} />
+              <Route path='/add-product' element={<AddProduct />} />
+              <Route path='/edit-product/:id' element={<EditProduct />} />
+              <Route
+                path='/view-products'
+                element={
+                  <ProductsList
+                    platillos={platillos}
+                    setPlatillos={setPlatillos}
+                  />
+                }
+              />
 
-          <Route path='employees' element={<EmployeesDashboard />} />
-          <Route path='/add-employee' element={<AddEmployee />} />
-          <Route path='/edit-employee' element={<EditEmployee />} />
-          <Route path='/employee-list' element={<EmployeeList />} />
-          <Route path='/dashboard' element={<Dashboard />} />
-          <Route
-            path='/add-order'
-            element={
-              <AddOrder
-                onPlatilloChange={handlePlatilloChange}
-                onProductDelete={handleProductDelete}
-                onProductIncrease={handleProductIncrease}
-                onProductDecrease={handleProductDecrease}
-                onNoteChange={handleProductNote}
-                productos={productos}
-                total={total}
-                onRadioChange={handleRadioChange}
-                isLocal={isLocal}
-                onSubmit={onNewOrderSubmit}
-                platillos={platillos}
-                isDomicilio={isDomicilio}
+              <Route path='employees' element={<EmployeesDashboard />} />
+              <Route path='/add-employee' element={<AddEmployee />} />
+              <Route path='/edit-employee/:id' element={<EditEmployee />} />
+              <Route path='/employee-list' element={<EmployeeList />} />
+              <Route path='/dashboard' element={<Dashboard />} />
+              <Route
+                path='/add-order'
+                element={
+                  <AddOrder
+                    onPlatilloChange={handlePlatilloChange}
+                    onProductDelete={handleProductDelete}
+                    onProductIncrease={handleProductIncrease}
+                    onProductDecrease={handleProductDecrease}
+                    onNoteChange={handleProductNote}
+                    productos={productos}
+                    total={total}
+                    onRadioChange={handleRadioChange}
+                    isLocal={isLocal}
+                    onSubmit={onNewOrderSubmit}
+                    platillos={platillos}
+                    isDomicilio={isDomicilio}
+                  />
+                }
               />
-            }
-          />
-          <Route
-            path='/edit-orders'
-            element={<EditOrders pedidos={pedidos} setPedidos={setPedidos} />}
-          />
-          <Route
-            path='/edit-order/:id'
-            element={
-              <EditOrder
-                onPlatilloChange={handlePlatilloChange}
-                setTotal={setTotal}
-                total={total}
-                onProductDelete={handleProductEditDelete}
-                onProductIncrease={handleProductIncrease}
-                onProductDecrease={handleProductDecrease}
-                onNoteChange={handleProductNote}
-                productos={productos}
-                onRadioChange={handleRadioChange}
-                isLocal={isLocal}
-                isDomicilio={isDomicilio}
-                onSubmit={onEditOrderSubmit}
-                platillos={platillos}
-                setPlatillos={setPlatillos}
-                setIsDomicilio={setIsDomicilio}
-                setIsLocal={setIsLocal}
-                setProductos={setProductos}
-                pedido={pedido}
-                setPedido={setPedido}
-                fetchPedido={fetchPedido}
-                fetchDetallesPedido={fetchDetallesPedido}
+              <Route
+                path='/edit-orders'
+                element={
+                  <EditOrders pedidos={pedidos} setPedidos={setPedidos} />
+                }
               />
-            }
-          />
-          <Route
-            path='/view-orders'
-            element={<ViewOrders pedidos={pedidos} setPedidos={setPedidos} />}
-          />
-          <Route
-            path='/order/:id'
-            element={
-              <Order
-                pedido={pedido}
-                productos={productos}
-                total={total}
-                fetchPedido={fetchPedido}
-                fetchDetallesPedido={fetchDetallesPedido}
+              <Route
+                path='/edit-order/:id'
+                element={
+                  <EditOrder
+                    onPlatilloChange={handlePlatilloChange}
+                    setTotal={setTotal}
+                    total={total}
+                    onProductDelete={handleProductEditDelete}
+                    onProductIncrease={handleProductIncrease}
+                    onProductDecrease={handleProductDecrease}
+                    onNoteChange={handleProductNote}
+                    productos={productos}
+                    onRadioChange={handleRadioChange}
+                    isLocal={isLocal}
+                    isDomicilio={isDomicilio}
+                    onSubmit={onEditOrderSubmit}
+                    platillos={platillos}
+                    setPlatillos={setPlatillos}
+                    setIsDomicilio={setIsDomicilio}
+                    setIsLocal={setIsLocal}
+                    setProductos={setProductos}
+                    pedido={pedido}
+                    setPedido={setPedido}
+                    fetchPedido={fetchPedido}
+                    fetchDetallesPedido={fetchDetallesPedido}
+                  />
+                }
               />
-            }
-          />
-          <Route
-            path='/pay-orders'
-            element={<OpenOrders pedidos={pedidos} setPedidos={setPedidos} />}
-          />
-          <Route
-            path='/pay-order/:id'
-            element={
-              <OpenOrder
-                total={total}
-                pedido={pedido}
-                productos={productos}
-                fetchDetallesPedido={fetchDetallesPedido}
-                fetchPedido={fetchPedido}
+              <Route
+                path='/view-orders'
+                element={
+                  <ViewOrders pedidos={pedidos} setPedidos={setPedidos} />
+                }
               />
-            }
-          />
-          <Route
-            path='/delete-orders'
-            element={<DeleteOrders pedidos={pedidos} setPedidos={setPedidos} />}
-          />
-          <Route
-            path='/delete-order/:id'
-            element={
-              <DeleteOrder
-                total={total}
-                pedido={pedido}
-                productos={productos}
-                fetchDetallesPedido={fetchDetallesPedido}
-                fetchPedido={fetchPedido}
+              <Route
+                path='/order/:id'
+                element={
+                  <Order
+                    pedido={pedido}
+                    productos={productos}
+                    total={total}
+                    fetchPedido={fetchPedido}
+                    fetchDetallesPedido={fetchDetallesPedido}
+                    platillos={platillos}
+                  />
+                }
               />
-            }
-          />
-          <Route path='*' element={<Navigate to='/dashboard' />} />
-        </Routes>
+              <Route
+                path='/pay-orders'
+                element={
+                  <OpenOrders pedidos={pedidos} setPedidos={setPedidos} />
+                }
+              />
+              <Route
+                path='/pay-order/:id'
+                element={
+                  <OpenOrder
+                    total={total}
+                    pedido={pedido}
+                    productos={productos}
+                    fetchDetallesPedido={fetchDetallesPedido}
+                    fetchPedido={fetchPedido}
+                  />
+                }
+              />
+              <Route
+                path='/delete-orders'
+                element={
+                  <DeleteOrders pedidos={pedidos} setPedidos={setPedidos} />
+                }
+              />
+              <Route
+                path='/delete-order/:id'
+                element={
+                  <DeleteOrder
+                    total={total}
+                    pedido={pedido}
+                    productos={productos}
+                    fetchDetallesPedido={fetchDetallesPedido}
+                    fetchPedido={fetchPedido}
+                  />
+                }
+              />
+
+              <Route path='*' element={<Navigate to='/login' />} />
+            </Routes>
+          </ProtectedRoute>
+          <Routes>
+            <Route path='/login' element={<Login />} />
+          </Routes>
+        </AuthProvider>
       </Router>
     </main>
   );
