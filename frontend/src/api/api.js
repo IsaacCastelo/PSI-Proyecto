@@ -7,10 +7,100 @@ const api = axios.create({
   },
 });
 
+export const login = async (data) => {
+  try {
+    const response = await api.post('/auth/', data);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const postUsuario = async (data) => {
+  try {
+    const response = await api.post('/usuarios/', data);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const patchUsuario = async (id, data) => {
+  try {
+    const response = await api.patch(`/usuarios/${id}/`, data);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const getUsuarios = async () => {
+  try {
+    const response = await api.get('/usuarios');
+    return response.data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const getUsuario = async (id) => {
+  try {
+    const response = await api.get(`/usuarios/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const deleteUsuario = async (id) => {
+  try {
+    const response = await api.delete(`/usuarios/${id}/`);
+    return response;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const getPlatillo = async (id) => {
+  try {
+    const response = await api.get(`/platillos/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 export const getPlatillos = async () => {
   try {
     const response = await api.get('/platillos');
     return response.data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const postPlatillo = async (data) => {
+  try {
+    const response = await api.post('/platillos/', data);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const patchPlatillo = async (id, data) => {
+  try {
+    const response = await api.patch(`/platillos/${id}/`, data);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const deletePlatillo = async (id) => {
+  try {
+    const response = await api.delete(`/platillos/${id}/`);
+    return response;
   } catch (error) {
     console.error(error);
   }
