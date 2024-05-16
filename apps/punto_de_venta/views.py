@@ -1,16 +1,33 @@
 from rest_framework import generics
-from .models import Platillo, Pedido, DetallePedido, IngresoDiario, Movimiento, Reporte
-from .serializers import PlatilloSerializer, PedidoSerializer, DetallePedidoSerializer, IngresoDiarioSerializer, MovimientoSerializer, ReporteSerializer
+from apps.punto_de_venta.backends import CustomUsuarioBackend
+from .models import Platillo, Pedido, DetallePedido, IngresoDiario, Movimiento, Reporte, Usuario
+from .serializers import PlatilloSerializer, PedidoSerializer, DetallePedidoSerializer, IngresoDiarioSerializer, MovimientoSerializer, ReporteSerializer, UsuarioSerializer
 from django.contrib.auth.models import User
 from datetime import datetime
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from django.contrib.auth import authenticate
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework_simplejwt.tokens import RefreshToken
 
-# class MesaListCreate(generics.ListCreateAPIView):
-#     queryset = Mesa.objects.all()
-#     serializer_class = MesaSerializer
+class CustomAuthToken(APIView):
+    authentication_classes = [JWTAuthentication]
 
-# class MesaDetailUpdateDelete(generics.RetrieveUpdateDestroyAPIView):
-#     queryset = Mesa.objects.all()
-#     serializer_class = MesaSerializer
+    def post(self, request, *args, **kwargs):
+        nombre_usuario = request.data.get('nombre_usuario')
+        contraseña = request.data.get('contraseña')
+        
+        user = CustomUsuarioBackend().authenticate(request, nombre_usuario=nombre_usuario, contraseña=contraseña)
+        
+        if user is not None:
+            refresh = RefreshToken.for_user(user)
+            return Response({
+                'refresh': str(refresh),
+                'access': str(refresh.access_token),
+            }, status=status.HTTP_200_OK)
+        else:
+            return Response({'error': 'Nombre de usuario o contraseña incorrectos'}, status=status.HTTP_400_BAD_REQUEST)
 
 class PlatilloListCreate(generics.ListCreateAPIView):
     queryset = Platillo.objects.all()
@@ -19,6 +36,10 @@ class PlatilloListCreate(generics.ListCreateAPIView):
 class PlatilloDetailUpdateDelete(generics.RetrieveUpdateDestroyAPIView):
     queryset = Platillo.objects.all()
     serializer_class = PlatilloSerializer
+    
+    def perform_destroy(self, instance):
+        instance.activo = False
+        instance.save()
 
 class PedidoListCreate(generics.ListCreateAPIView):
     queryset = Pedido.objects.all()
@@ -74,3 +95,11 @@ class ReporteListCreate(generics.ListCreateAPIView):
 class ReporteDetailUpdateDelete(generics.RetrieveUpdateDestroyAPIView):
     queryset = Reporte.objects.all()
     serializer_class = ReporteSerializer
+    
+class UsuarioListCreate(generics.ListCreateAPIView):
+    queryset = Usuario.objects.all()
+    serializer_class = UsuarioSerializer
+
+class UsuarioDetailUpdateDelete(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Usuario.objects.all()
+    serializer_class = UsuarioSerializer
