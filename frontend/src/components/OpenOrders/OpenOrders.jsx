@@ -60,6 +60,11 @@ export default function OpenOrders({ pedidos, setPedidos }) {
             ))}
           </tbody>
         </table>
+        {pedidos.length === 0 && (
+          <div className='text-center mt-4'>
+            No hay órdenes listas para cobro
+          </div>
+        )}
       </div>
     </section>
   );

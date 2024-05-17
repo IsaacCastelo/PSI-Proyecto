@@ -1,10 +1,12 @@
 import toast from 'react-hot-toast';
 import PropTypes from 'prop-types';
 import { useForm } from 'react-hook-form';
+import { useEffect } from 'react';
 
 AddOrder.propTypes = {
   onSubmit: PropTypes.func.isRequired,
   productos: PropTypes.array.isRequired,
+  setProductos: PropTypes.func.isRequired,
   total: PropTypes.number.isRequired,
   onProductDecrease: PropTypes.func.isRequired,
   onProductIncrease: PropTypes.func.isRequired,
@@ -20,6 +22,7 @@ AddOrder.propTypes = {
 export default function AddOrder({
   onSubmit,
   productos,
+  setProductos,
   total,
   onProductDecrease,
   onProductIncrease,
@@ -40,6 +43,10 @@ export default function AddOrder({
     resetField('nombre_cliente');
     resetField('direccion');
   }
+
+  useEffect(() => {
+    setProductos([]);
+  }, []);
 
   return (
     <section className='w-full'>

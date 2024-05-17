@@ -322,6 +322,7 @@ function App() {
                     onProductDecrease={handleProductDecrease}
                     onNoteChange={handleProductNote}
                     productos={productos}
+                    setProductos={setProductos}
                     total={total}
                     onRadioChange={handleRadioChange}
                     isLocal={isLocal}

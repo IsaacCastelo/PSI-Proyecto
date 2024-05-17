@@ -12,15 +12,6 @@ export default function EditEmployee() {
   let { id } = useParams('id');
 
   const onSubmit = async (data) => {
-    if (data.contraseña !== data.repite_contraseña) {
-      toast.error('Las contraseñas no coinciden');
-      return;
-    }
-    if (!data.contraseña || data.contraseña.isEmpty()) {
-      delete data.contraseña;
-      delete data.repite_contraseña;
-    }
-
     try {
       await patchUsuario(id, data);
       toast.success('Usuario actualizado correctamente');
@@ -70,27 +61,13 @@ export default function EditEmployee() {
           })}
           className='rounded shadow p-1'
           onChange={() => setIsEdited(true)}
-        />
-        <input
-          placeholder='Nueva contraseña'
-          type='password'
-          {...register('contraseña')}
-          className='rounded shadow px-1'
-          minLength={8}
-          onChange={() => setIsEdited(true)}
-        />
-        <input
-          className='rounded shadow px-1'
-          {...register('repite_contraseña')}
-          placeholder='Repite la nueva contraseña'
-          type='password'
-          minLength={8}
-          onChange={() => setIsEdited(true)}
+          disabled={usuario.rol === 1}
         />
         <select
           {...register('rol', { value: usuario.rol })}
           className='rounded shadow p-1 w-[229px]'
           onChange={() => setIsEdited(true)}
+          disabled={usuario.rol === 1}
         >
           <option value='' disabled>
             Seleccionar rol
@@ -108,7 +85,7 @@ export default function EditEmployee() {
               : ' bg-gray-300 cursor-not-allowed rounded px-[76px] py-1'
           }
         >
-          Registrar
+          Actualizar
         </button>
       </form>
     </section>

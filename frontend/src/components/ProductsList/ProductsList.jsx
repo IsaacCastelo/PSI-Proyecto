@@ -13,7 +13,6 @@ ProductsList.propTypes = {
 export default function ProductsList({ platillos, setPlatillos }) {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
-  // Add a state variable to track if the data has been loaded
   const [isLoading, setIsLoading] = useState(true);
   const id = useRef(null);
 
@@ -39,20 +38,22 @@ export default function ProductsList({ platillos, setPlatillos }) {
     setIsOpen(false);
   }
 
+  function filterPlatillos() {
+    setPlatillos(platillos.filter((platillo) => platillo.activo));
+  }
+
   useEffect(() => {
-    // Fetch the platillos data
     getPlatillos()
       .then((data) => {
-        setPlatillos(data.filter((platillo) => platillo.activo));
-        setIsLoading(false); // Set isLoading to false once the data is loaded
+        setPlatillos(data);
+        filterPlatillos();
+        setIsLoading(false);
       })
       .catch((error) => {
         console.error(error);
-        setIsLoading(false); // Set isLoading to false if there's an error
       });
-  }, []);
+  }, [setPlatillos]);
 
-  // Render a loading state while the data is being fetched
   if (isLoading) {
     return (
       <div className='flex items-center justify-center w-full h-full animate-spin'>
